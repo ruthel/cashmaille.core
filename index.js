@@ -6,6 +6,7 @@ const cors = require("cors");
 const app = express();
 
 const users = require("./src/routes/user");
+const bodyParser = require('body-parser')
 
 app.use(cors());
 app.use(
@@ -14,6 +15,7 @@ app.use(
     limit: "60mb",
   })
 );
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(users);
 app.use("*", (_, res, __) => {
   return res.status(404).send("Resource not found");

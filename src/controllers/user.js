@@ -11,7 +11,11 @@ const Message = require("../models/message");
 exports.signup = async (req, res) => {
   try {
     console.log(req.body)
-    return await new User(req.body).save(res.status(201).json)
+    return new User(req.body).save().then(doc => {
+      res.status(201).json(doc)
+    }, () => {
+      res.status(400)
+    })
   } catch (error) {
     console.log(error)
     if (error.message.startsWith("User validation")) {

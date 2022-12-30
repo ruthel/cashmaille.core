@@ -10,13 +10,13 @@ const Message = require("../models/message");
 
 exports.signup = async (req, res) => {
   try {
-    const user = new User(req.body);
-    return res.status(201).json({
-      user, message: "Email sent",
+    new User(req.body).save((user) => {
+      return res.status(201).json({
+        user, message: "Email sent",
+      })
     })
   } catch (error) {
     console.log(error)
-    
     if (error.message.startsWith("User validation")) {
       return invalidData({
         res,
@@ -26,18 +26,18 @@ exports.signup = async (req, res) => {
       res, statusCode: 500, error
     });
   }
-  
+
 }
 
 exports.emailVerification = async (req, res, next) => {
   try {
-    
+
     req.user.accountVerified = true
     req.user.emailVerificationToken = null
     await req.user.save();
-    
+
     return res.status(200).json(req.user);
-    
+
   } catch (error) {
     return invalidData({
       res, statusCode: 500
@@ -48,7 +48,7 @@ exports.notify = async (req, res) => {
   try {
     let result = await User.updateOne({_id: req.params.id}, {planConfig: {subscriptionActivated: true}})
     if (result) return res.status(200).json(req.user); else return res.status(400);
-    
+
   } catch (error) {
     return invalidData({
       res, statusCode: 500
@@ -58,26 +58,26 @@ exports.notify = async (req, res) => {
 
 exports.signin = async (req, res, next) => {
   try {
-    
+
     const email = validator.escape(req.body.email)
-    
+
     if (!validator.isEmail(email)) {
-      
+
       return invalidData({
         res, error: "Invalid email"
       });
-      
+
     }
-    
-    
+
+
     const user = await User.findByCredentials(email, req.body.password)
     if (!user) {
       return invalidData({
         res, error: 'No email account', statusCode: 404
       });
     }
-    
-    
+
+
     const token = await user.generateAuthToken()
     res.status(200).json({
       user, token
@@ -94,11 +94,11 @@ exports.signin = async (req, res, next) => {
 
 exports.blockAccount = async (req, res, next) => {
   try {
-    
+
     let result = await User.findOneAndUpdate({_id: req.body.id}, {
       accountBlocked: req.body.value
     })
-    
+
     if (result) {
       return res.status(200).json({
         user: req.user
@@ -118,7 +118,7 @@ exports.signout = async (req, res, next) => {
       return token.token !== req.token
     })
     await req.user.save()
-    
+
     res.status(200).send("Logged out")
   } catch (e) {
     invalidData({
@@ -128,7 +128,7 @@ exports.signout = async (req, res, next) => {
 }
 
 exports.signoutall = async (req, res, next) => {
-  
+
   try {
     req.user.tokens = []
     await req.user.save()
@@ -144,28 +144,28 @@ exports.signoutall = async (req, res, next) => {
 
 exports.forgottenPasswordemailVerification = async (req, res, next) => {
   try {
-    
+
     const user = await User.checkEmailInUse(req.body.email)
     if (!user) {
       return invalidData({
         res, statusCode: 404, error: 'No email account'
       });
     }
-    
-    
+
+
     const token = await user.generateEmailResetToken()
-    
-    
+
+
     await sendPasswordResetEmail({
       email: user.email,
       emailsSubject: 'Password reset',
       emailText: 'Follow the link to reset your password.This email is valid for the next thirty minutes',
       token,
     });
-    
-    
+
+
     return res.status(200).json("Email sent")
-    
+
   } catch (e) {
     return invalidData({
       res, statusCode: 500
@@ -175,8 +175,8 @@ exports.forgottenPasswordemailVerification = async (req, res, next) => {
 
 exports.passwordReset = async (req, res, next) => {
   try {
-    
-    
+
+
     if (!validator.isStrongPassword(req.body.password, {
       minSymbols: 0
     })) {
@@ -184,15 +184,15 @@ exports.passwordReset = async (req, res, next) => {
         res, statusCode: 404, error: 'Password is not strong enough'
       });
     }
-    
-    
+
+
     req.user.password = req.body.password;
     req.user.emailResetToken = null
-    
+
     await req.user.save()
-    
+
     return res.status(201).json("Password reset")
-    
+
   } catch (error) {
     return invalidData({
       res, statusCode: 500
@@ -238,11 +238,11 @@ exports.getUsers = async (req, res, next) => {
 
 exports.updateProfile = async (req, res, next) => {
   try {
-    
+
     const propertiesArray = ['firstname', 'lastname', 'matricule', 'username'];
     let data = JSON.parse(req.body.user)
-    
-    
+
+
     for (const prop of Object.keys(data)) {
       if (!propertiesArray.includes(prop)) {
         delete data[prop]
@@ -253,7 +253,7 @@ exports.updateProfile = async (req, res, next) => {
     });
     req.user.profile = 'https://www.itreportserver.waternels.com/picture/profile/' + req.user._id;
     await req.user.save()
-    
+
     return res.status(200).json(req.user);
   } catch (error) {
     console.log(error)
@@ -266,12 +266,12 @@ exports.updateProfile = async (req, res, next) => {
       res, statusCode: 500,
     });
   }
-  
+
 }
 
 exports.modifyPassword = async (req, res, next) => {
   try {
-    
+
     const user = await User.findByCredentials(req.user.email, req.body.oldPassword)
     if (!user) {
       return invalidData({
@@ -279,12 +279,12 @@ exports.modifyPassword = async (req, res, next) => {
       })
     }
     if (!validator.equals(req.body.password, req.body.confirmedPassword)) {
-      
+
       return invalidData({
         res, error: 'Passwords do not match'
       });
     }
-    
+
     if (!validator.isStrongPassword(req.body.password, {
       minSymbols: 0
     })) {
@@ -292,19 +292,19 @@ exports.modifyPassword = async (req, res, next) => {
         res, error: 'Password is not strong enough'
       });
     }
-    
+
     req.user.password = req.body.password;
     await req.user.save()
-    
+
     return res.status(201).json("Password changed")
-    
+
   } catch (error) {
     if (error.message.startsWith("User validation")) {
       return invalidData({
         res, statusCode: 400,
       })
     }
-    
+
     console.log(error)
     return invalidData({
       res, statusCode: 500,

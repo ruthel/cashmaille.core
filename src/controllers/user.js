@@ -10,11 +10,11 @@ const Message = require("../models/message");
 
 exports.signup = async (req, res) => {
   try {
-    return new User(req.body).save().then(doc => {
+    new User(req.body).save().then(doc => {
       console.log("Data saved successfully")
-      res.status(201).json(doc)
-    }, () => {
-      console.log("Unable to save data")
+      return res.status(201).json(doc)
+    }, (reason) => {
+      console.log("Unable to save data", reason)
       res.status(400)
     })
   } catch (error) {

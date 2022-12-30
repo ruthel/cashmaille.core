@@ -14,14 +14,14 @@ exports.signup = async (req, res) => {
       let exist = await User.find({phone: req.body.phone})
       if (exist) {
         console.log("Duplicated phone")
-        res.status(409)
+        return res.status(409)
       } else
         new User(req.body).save().then(doc => {
           console.log("Data saved successfully")
           return res.status(201).json(doc)
         }, (reason) => {
           console.log("Unable to save data", reason)
-          res.status(400)
+          return res.status(400)
         })
     } else
       res.status(400)

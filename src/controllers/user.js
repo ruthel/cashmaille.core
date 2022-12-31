@@ -105,9 +105,8 @@ exports.addToNetwork = async (req, res) => {
       user.network = [...user.network, member._id]
       await member.save()
       await user.save()
-      await User.populate(user, {
-        path: 'network'
-      })
+      await user.populate('network')
+      console.log(user)
       res.status(200).json(user.network)
     } else {
       res.status(400).json({ok: false})

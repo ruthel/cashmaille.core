@@ -78,7 +78,7 @@ exports.signin = async (req, res, next) => {
     // }
 
 
-    const user = await User.find({phone: req.body.phone, password: req.body.password})
+    const user = await User.findOne({phone: req.body.phone, password: req.body.password})
     if (!user) {
       return invalidData({
         res, error: 'No email account', statusCode: 404

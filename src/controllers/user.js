@@ -99,6 +99,8 @@ exports.addToNetwork = async (req, res) => {
   try {
     let user = await User.findById(req.body.id)
     let member = await User.findOne({_id: req.body.member})
+    console.log(member?.awaitingPair)
+    console.log(member, user)
     if (member?.awaitingPair?.includes(user._id)) {
       member.network = [member.network, user._id]
       user.network = [user.network, member._id]

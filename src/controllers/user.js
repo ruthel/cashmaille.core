@@ -1,7 +1,6 @@
 const validator = require('validator');
 const {invalidData} = require('../helpers/error');
 const {sendWelcomeEmail, sendPasswordResetEmail} = require("../helpers/mail")
-const converter = require('hex2dec');
 
 const User = require('../models/user/user');
 const fs = require("fs");
@@ -16,7 +15,7 @@ exports.signUp = async (req, res) => {
         console.log("Duplicated phone")
         return res.status(409)
       } else {
-        new User({...req.body, userCode: converter.decToHex(new Date().getTime(), {prefix: false})}).save().then(doc => {
+        new User({...req.body, userCode: (new Date().getTime()).toString(16)}).save().then(doc => {
           console.log("Data saved successfully")
           return res.status(201).json(doc)
         }, (reason) => {
@@ -76,6 +75,17 @@ exports.searchForUser = async (req, res) => {
   try {
     const users = await User.find({userCode: {$regex: `.*${req.body.userCode}.*`}})
     res.status(200).json(users)
+  } catch (e) {
+    console.log(e)
+    res.status(500).json()
+  }
+}
+exports.awaitingPair = async (req, res) => {
+  try {
+    let user = await User.findById(req.body.id)
+    user.awaitingPair = [...user.awaitingPair, req.body.pairer]
+    await user.save()
+    res.status(200).json({ok: true})
   } catch (e) {
     console.log(e)
     res.status(500).json()

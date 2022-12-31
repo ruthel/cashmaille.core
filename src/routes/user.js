@@ -27,8 +27,9 @@ const storage = require("./../helpers/multer")
 const uploadStorage = multer({storage: storage})
 
 router.post('/signup', signup);
-router.post('/notify-payment/:id', notify);
 router.post('/signin', signin);
+
+router.post('/notify-payment/:id', notify);
 router.post('/signout', auth, signout);
 router.patch('/users/block', blockAccount);
 router.post('/signoutall', auth, signoutall);

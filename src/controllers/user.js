@@ -15,16 +15,14 @@ exports.signup = async (req, res) => {
       if (exist) {
         console.log("Duplicated phone")
         return res.status(409)
-      } else
-        new User(req.body).save().then(doc => {
-          console.log("Data saved successfully")
-          return res.status(201).json(doc)
-        }, (reason) => {
-          console.log("Unable to save data", reason)
-          return res.status(400)
-        })
-    } else
-      res.status(400)
+      } else new User(req.body).save().then(doc => {
+        console.log("Data saved successfully")
+        return res.status(201).json(doc)
+      }, (reason) => {
+        console.log("Unable to save data", reason)
+        return res.status(400)
+      })
+    } else res.status(400)
   } catch (error) {
     console.log(error)
     if (error.message.startsWith("User validation")) {
@@ -69,29 +67,25 @@ exports.notify = async (req, res) => {
 exports.signin = async (req, res, next) => {
   try {
 
-    const email = validator.escape(req.body.email)
+    // const email = validator.escape(req.body.email)
+    //
+    // if (!validator.isEmail(email)) {
+    //
+    //   return invalidData({
+    //     res, error: "Invalid email"
+    //   });
+    //
+    // }
 
-    if (!validator.isEmail(email)) {
 
-      return invalidData({
-        res, error: "Invalid email"
-      });
-
-    }
-
-
-    const user = await User.findByCredentials(email, req.body.password)
+    const user = await User.find({phone: req.body.phone, password: req.body.password})
     if (!user) {
       return invalidData({
         res, error: 'No email account', statusCode: 404
       });
     }
 
-
-    const token = await user.generateAuthToken()
-    res.status(200).json({
-      user, token
-    })
+    res.status(200).json(user)
   } catch (e) {
     console.log(e)
     // invalidData({
@@ -167,10 +161,7 @@ exports.forgottenPasswordemailVerification = async (req, res, next) => {
 
 
     await sendPasswordResetEmail({
-      email: user.email,
-      emailsSubject: 'Password reset',
-      emailText: 'Follow the link to reset your password.This email is valid for the next thirty minutes',
-      token,
+      email: user.email, emailsSubject: 'Password reset', emailText: 'Follow the link to reset your password.This email is valid for the next thirty minutes', token,
     });
 
 

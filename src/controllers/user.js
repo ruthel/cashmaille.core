@@ -83,9 +83,31 @@ exports.searchForUser = async (req, res) => {
 exports.awaitingPair = async (req, res) => {
   try {
     let user = await User.findById(req.body.id)
-    user.awaitingPair = [...user.awaitingPair, req.body.pairer]
-    await user.save()
-    res.status(200).json({ok: true})
+    if (!user.awaitingPair.includes(req.body.pairer)) {
+      user.awaitingPair = [...user.awaitingPair, req.body.pairer]
+      await user.save()
+      res.status(201).json({ok: true})
+    } else {
+      res.status(200).json({ok: true})
+    }
+  } catch (e) {
+    console.log(e)
+    res.status(500).json()
+  }
+}
+exports.addToNetwork = async (req, res) => {
+  try {
+    let user = await User.findById(req.body.id)
+    let member = await User.findOne({_id: req.body.member})
+    if (member?.awaitingPair?.includes(user._id)) {
+      member.network = [member.network, user._id]
+      user.network = [user.network, member._id]
+      await member.save()
+      await user.save()
+      res.status(200).json({ok: true})
+    } else {
+      res.status(400).json({ok: false})
+    }
   } catch (e) {
     console.log(e)
     res.status(500).json()

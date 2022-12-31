@@ -14,7 +14,7 @@ const {
   modifyPassword,
   getUsers,
   notify,
-  blockAccount, getProfilePicture, searchForUser, awaitingPair
+  blockAccount, getProfilePicture, searchForUser, awaitingPair, addToNetwork
 } = require("../controllers/user");
 const {
   auth,
@@ -30,6 +30,7 @@ router.post('/signup', signUp);
 router.post('/signin', signIn);
 router.post('/searchcode', searchForUser);
 router.post('/awaitingPair', awaitingPair);
+router.post('/addToNetwork', addToNetwork);
 
 router.post('/notify-payment/:id', notify);
 router.post('/signout', auth, signout);

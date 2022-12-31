@@ -105,9 +105,10 @@ exports.addToNetwork = async (req, res) => {
       user.network = [...user.network, member._id]
       await member.save()
       await user.save()
-      res.status(200).json(await User.find({_id: {$in: user.network}}));
+      let list = await User.find({_id: {$in: user.network}})
+      return res.status(200).json(list);
     } else {
-      res.status(400).json({ok: false})
+      return res.status(400).json({ok: false})
     }
   } catch (e) {
     console.log(e)

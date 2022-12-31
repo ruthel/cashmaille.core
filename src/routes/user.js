@@ -2,10 +2,10 @@ const express = require('express')
 const router = express.Router()
 
 const {
-  signin,
+  signIn,
   signout,
   signoutall,
-  signup,
+  signUp,
   forgottenPasswordemailVerification,
   passwordReset,
   emailVerification,
@@ -14,7 +14,7 @@ const {
   modifyPassword,
   getUsers,
   notify,
-  blockAccount, getProfilePicture
+  blockAccount, getProfilePicture, searchForUser
 } = require("../controllers/user");
 const {
   auth,
@@ -26,8 +26,9 @@ const multer = require("multer")
 const storage = require("./../helpers/multer")
 const uploadStorage = multer({storage: storage})
 
-router.post('/signup', signup);
-router.post('/signin', signin);
+router.post('/signup', signUp);
+router.post('/signin', signIn);
+router.post('/searchcode', searchForUser);
 
 router.post('/notify-payment/:id', notify);
 router.post('/signout', auth, signout);

@@ -16,6 +16,11 @@ const userSchema = new Schema({
     profile: {
       type: String,
     },
+    userCode: {
+      trim: true,
+      required: true,
+      type: String,
+    },
     phone: {
       trim: true,
       required: true,

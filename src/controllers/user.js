@@ -1,14 +1,14 @@
 const validator = require('validator');
 const {invalidData} = require('../helpers/error');
 const {sendWelcomeEmail, sendPasswordResetEmail} = require("../helpers/mail")
+const converter = require('hex2dec');
 
-//mongoose model
 const User = require('../models/user/user');
 const fs = require("fs");
 const Message = require("../models/message");
 
 
-exports.signup = async (req, res) => {
+exports.signUp = async (req, res) => {
   try {
     if (req.body.phone) {
       let exist = await User.findOne({phone: req.body.phone})
@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
         console.log("Duplicated phone")
         return res.status(409)
       } else {
-        new User(req.body).save().then(doc => {
+        new User({...req.body, userCode: converter.decToHex(new Date().getTime(), {prefix: false})}).save().then(doc => {
           console.log("Data saved successfully")
           return res.status(201).json(doc)
         }, (reason) => {
@@ -41,35 +41,7 @@ exports.signup = async (req, res) => {
   }
 
 }
-
-exports.emailVerification = async (req, res, next) => {
-  try {
-
-    req.user.accountVerified = true
-    req.user.emailVerificationToken = null
-    await req.user.save();
-
-    return res.status(200).json(req.user);
-
-  } catch (error) {
-    return invalidData({
-      res, statusCode: 500
-    })
-  }
-}
-exports.notify = async (req, res) => {
-  try {
-    let result = await User.updateOne({_id: req.params.id}, {planConfig: {subscriptionActivated: true}})
-    if (result) return res.status(200).json(req.user); else return res.status(400);
-
-  } catch (error) {
-    return invalidData({
-      res, statusCode: 500
-    })
-  }
-}
-
-exports.signin = async (req, res, next) => {
+exports.signIn = async (req, res) => {
   try {
 
     // const email = validator.escape(req.body.email)
@@ -100,6 +72,43 @@ exports.signin = async (req, res, next) => {
     res.status(500).json()
   }
 }
+exports.searchForUser = async (req, res) => {
+  try {
+    const users = await User.find({userCode: {$regex: `.*${req.body.userCode}.*`}})
+    res.status(200).json(users)
+  } catch (e) {
+    console.log(e)
+    res.status(500).json()
+  }
+}
+
+exports.emailVerification = async (req, res, next) => {
+  try {
+
+    req.user.accountVerified = true
+    req.user.emailVerificationToken = null
+    await req.user.save();
+
+    return res.status(200).json(req.user);
+
+  } catch (error) {
+    return invalidData({
+      res, statusCode: 500
+    })
+  }
+}
+exports.notify = async (req, res) => {
+  try {
+    let result = await User.updateOne({_id: req.params.id}, {planConfig: {subscriptionActivated: true}})
+    if (result) return res.status(200).json(req.user); else return res.status(400);
+
+  } catch (error) {
+    return invalidData({
+      res, statusCode: 500
+    })
+  }
+}
+
 
 exports.blockAccount = async (req, res, next) => {
   try {

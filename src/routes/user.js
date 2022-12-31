@@ -14,7 +14,7 @@ const {
   modifyPassword,
   getUsers,
   notify,
-  blockAccount, getProfilePicture, searchForUser
+  blockAccount, getProfilePicture, searchForUser, awaitingPair
 } = require("../controllers/user");
 const {
   auth,
@@ -29,6 +29,7 @@ const uploadStorage = multer({storage: storage})
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 router.post('/searchcode', searchForUser);
+router.post('/awaitingPair', awaitingPair);
 
 router.post('/notify-payment/:id', notify);
 router.post('/signout', auth, signout);

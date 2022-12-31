@@ -102,8 +102,8 @@ exports.addToNetwork = async (req, res) => {
     console.log(member?.awaitingPair)
     console.log(member, user)
     if (member?.awaitingPair?.includes(user._id)) {
-      member.network = [member.network, user._id]
-      user.network = [user.network, member._id]
+      member.network = [...member.network, user._id]
+      user.network = [...user.network, member._id]
       await member.save()
       await user.save()
       res.status(200).json({ok: true})

@@ -31,6 +31,7 @@ router.post('/signin', signIn);
 router.post('/searchcode', searchForUser);
 router.post('/awaitingPair', awaitingPair);
 router.post('/addToNetwork', addToNetwork);
+router.get('/users', getUsers);
 
 router.post('/notify-payment/:id', notify);
 router.post('/signout', auth, signout);
@@ -42,7 +43,6 @@ router.post('/passwordreset', verifyPaswordResetToken, passwordReset);
 router.get('/me', auth, getProfile);
 router.get('/picture/profile/:_id', getProfilePicture);
 router.get('/users', getUsers);
-// router.get('/users', auth, getUsers);
 router.patch('/me', auth, uploadStorage.array("file", 1), updateProfile);
 router.post('/modifypassword', auth, modifyPassword);
 

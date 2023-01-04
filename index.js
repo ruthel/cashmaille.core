@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 
 const db = require("./src/helpers/mongoose");
@@ -15,7 +16,7 @@ app.use(
     limit: "60mb",
   })
 );
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({extended: false}))
 app.use(users);
 app.use("*", (_, res, __) => {
   return res.status(404).send("Resource not found");

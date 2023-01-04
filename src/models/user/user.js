@@ -26,6 +26,11 @@ const userSchema = new Schema({
       required: true,
       type: String,
     },
+    token: {
+      trim: true,
+      required: true,
+      type: String,
+    },
     username: {
       trim: true,
       required: true,
@@ -46,6 +51,22 @@ const userSchema = new Schema({
     timestamps: true
   }
 );
+
+//function to generate email verification token
+userSchema.methods.generateEmailVerificationToken = async function () {
+  const user = this
+  const hashedEmail = await bcrypt.hash(user.email, 8);
+  const token = jwt.sign({
+    token: hashedEmail
+  }, process.env.secretKey, {
+    expiresIn: 60 * 30
+  });
+
+  user.token = token;
+  await user.save()
+
+  return token;
+}
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

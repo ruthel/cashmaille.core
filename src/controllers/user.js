@@ -42,32 +42,17 @@ exports.signUp = async (req, res) => {
 }
 exports.signIn = async (req, res) => {
   try {
-
-    // const email = validator.escape(req.body.email)
-    //
-    // if (!validator.isEmail(email)) {
-    //
-    //   return invalidData({
-    //     res, error: "Invalid email"
-    //   });
-    //
-    // }
-
-
     const user = await User.findOne({phone: req.body.phone, password: req.body.password})
-    if (!user) {
+    if (user) {
+      const token = await user.generateEmailVerificationToken();
+      res.status(200).json({...user, token})
+    } else {
       return invalidData({
-        res, error: 'No email account', statusCode: 404
+        res, error: 'No user account', statusCode: 404
       });
     }
-
-    res.status(200).json(user)
   } catch (e) {
     console.log(e)
-    // invalidData({
-    //     res,
-    //     statusCode: 500
-    // });
     res.status(500).json()
   }
 }
@@ -115,6 +100,19 @@ exports.addToNetwork = async (req, res) => {
     res.status(500).json()
   }
 }
+exports.getUsers = async (req, res, next) => {
+  try {
+    let result = await User.find();
+    if (result) {
+      return res.status(200).json(result);
+    } else return res.status(400).json({message: 'bad request'});
+  } catch (error) {
+    return invalidData({
+      res, statusCode: 500
+    });
+  }
+}
+
 
 exports.emailVerification = async (req, res, next) => {
   try {
@@ -262,22 +260,6 @@ exports.getProfilePicture = async (req, res) => {
   try {
     let file = fs.readFileSync('uploads/' + req.params._id + '/profile.png')
     return res.write(file);
-  } catch (error) {
-    return invalidData({
-      res, statusCode: 500
-    });
-  }
-}
-
-exports.getUsers = async (req, res, next) => {
-  try {
-    let result = await User.find();
-    result = JSON.parse(JSON.stringify(result))
-    result = await Promise.all(result.map(async e => ({...e, unread: await Message.count({owner: e._id, isRead: false})})))
-    if (result) {
-      if (result.length > 0) return res.status(200).json(result);
-      return res.status(204);
-    } else return res.status(400).json({message: 'bad request'});
   } catch (error) {
     return invalidData({
       res, statusCode: 500

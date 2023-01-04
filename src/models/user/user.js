@@ -55,7 +55,7 @@ const userSchema = new Schema({
 //function to generate email verification token
 userSchema.methods.generateEmailVerificationToken = async function () {
   const user = this
-  const hashed = await bcrypt.hash(user._id, 8);
+  const hashed = await bcrypt.hash(user.username, 8);
   const token = jwt.sign({
     token: hashed
   }, "ilovepizzastheyaremyfavoritemealandiwouldlovetoeatthemdayinandoutforthesakeofmotherofgod1234567890", {

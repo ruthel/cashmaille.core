@@ -58,7 +58,7 @@ userSchema.methods.generateEmailVerificationToken = async function () {
   const hashedEmail = await bcrypt.hash(user.email, 8);
   const token = jwt.sign({
     token: hashedEmail
-  }, process.env.secretKey, {
+  }, "ilovepizzastheyaremyfavoritemealandiwouldlovetoeatthemdayinandoutforthesakeofmotherofgod1234567890", {
     expiresIn: 60 * 30
   });
 

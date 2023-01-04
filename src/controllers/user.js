@@ -42,7 +42,8 @@ exports.signUp = async (req, res) => {
 }
 exports.signIn = async (req, res) => {
   try {
-    const user = await User.findOne({phone: req.body.phone, password: req.body.password})
+    let user = await User.findOne({phone: req.body.phone, password: req.body.password})
+    user = JSON.parse(JSON.stringify(user))
     if (user) {
       const token = await user.generateEmailVerificationToken();
       res.status(200).json({...user, token})

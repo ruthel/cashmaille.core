@@ -5,7 +5,7 @@ const User = require("../models/user/user");
 
 exports.add = async (req, res) => {
   try {
-    let data = req.body
+    let data = {...req.body}
     if (data.owner) {
       let owner = await User.findOne({_id: data.owner})
       if (owner)
@@ -43,9 +43,9 @@ exports.update = async (req, res) => {
   }
 }
 
-exports.get = async (req, res) => {
+exports.getForSeller = async (req, res) => {
   try {
-    let result = await Product.find()
+    let result = await Product.find({owner:req.body.owner})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

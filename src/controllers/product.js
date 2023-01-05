@@ -1,6 +1,7 @@
 //mongoose model
 const Product = require('../models/product');
 const User = require("../models/user/user");
+const {ObjectId} = require("mongodb");
 
 exports.add = async (req, res) => {
   try {
@@ -43,7 +44,7 @@ exports.update = async (req, res) => {
 
 exports.getForSeller = async (req, res) => {
   try {
-    let result = await Product.find({owner: req.body.owner})
+    let result = await Product.find({owner: new ObjectId(req.body.owner)})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

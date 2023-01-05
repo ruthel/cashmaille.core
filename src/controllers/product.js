@@ -32,3 +32,12 @@ exports.update = async (req, res) => {
     return res.status(500)
   }
 }
+
+exports.get = async (req, res) => {
+  try {
+    let result = await Product.find()
+    return res.status(200).json(result)
+  } catch (e) {
+    return res.status(500)
+  }
+}

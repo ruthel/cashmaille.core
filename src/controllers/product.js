@@ -1,6 +1,5 @@
 //mongoose model
 const Product = require('../models/product');
-const {userMessage} = require("./product");
 const User = require("../models/user/user");
 
 exports.add = async (req, res) => {
@@ -8,8 +7,7 @@ exports.add = async (req, res) => {
     let data = {...req.body}
     if (data.owner) {
       let owner = await User.findOne({_id: data.owner})
-      if (owner)
-        data.ref = (new Date().getTime()).toString(36)
+      if (owner) data.ref = (new Date().getTime()).toString(36)
     }
     let result = new Product({...data})
     result.save().then(doc => {
@@ -45,7 +43,7 @@ exports.update = async (req, res) => {
 
 exports.getForSeller = async (req, res) => {
   try {
-    let result = await Product.find({owner:req.body.owner})
+    let result = await Product.find({owner: req.body.owner})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

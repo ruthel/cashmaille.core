@@ -2,7 +2,7 @@ const validator = require('validator');
 const {invalidData} = require('../helpers/error');
 const {sendWelcomeEmail, sendPasswordResetEmail} = require("../helpers/mail")
 
-const User = require('../models/user/user');
+const User = require('../models/user');
 const fs = require("fs");
 const Message = require("../models/product");
 
@@ -25,7 +25,7 @@ exports.signUp = async (req, res) => {
       }
     } else {
       console.log("Bad request");
-      res.status(400)
+      return res.status(400)
     }
   } catch (error) {
     console.log(error)

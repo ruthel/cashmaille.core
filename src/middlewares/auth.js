@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const {
   invalidData
 } = require('../helpers/error')
-const User = require('../models/user/user')
+const User = require('../models/user')
 
 
 exports.auth = async (req, res, next) => {

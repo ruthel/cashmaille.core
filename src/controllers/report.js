@@ -1,6 +1,6 @@
 const Report = require("../models/report/report");
 const {invalidData} = require("../helpers/error");
-const User = require("../models/user/user");
+const User = require("../models/user");
 
 exports.createReport = async (req, res) => {
   try {

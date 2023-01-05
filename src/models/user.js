@@ -15,6 +15,7 @@ const userSchema = new Schema({
     },
     profile: {
       type: String,
+      enum: ['customer', 'seller']
     },
     userCode: {
       trim: true,
@@ -28,7 +29,7 @@ const userSchema = new Schema({
     },
     token: {
       trim: true,
-      required: true,
+      required: false,
       type: String,
     },
     username: {

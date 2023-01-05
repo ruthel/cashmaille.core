@@ -1,14 +1,15 @@
 //mongoose model
 const Product = require('../models/product');
-const User = require("../models/user/user");
+const User = require("../models/user");
 const {ObjectId} = require("mongodb");
 
 exports.add = async (req, res) => {
   try {
     let data = {...req.body}
     if (data.owner) {
-      let owner = await User.findOne({_id: data.owner})
+      let owner = await User.findOne({_id: data.owner, profile: {$not: {$eq: "customer"}}})
       if (owner) data.ref = (new Date().getTime()).toString(36)
+      else res.status(401).json({message: "Operation not allow for this user"})
     }
     let result = new Product({...data})
     result.save().then(doc => {

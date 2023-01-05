@@ -11,9 +11,12 @@ exports.add = async (req, res) => {
       if (owner)
         data.ref = (new Date().getTime()).toString(50)
     }
-    let result = new Product(data)
-    await result.save()
-    return res.status(200).json(result)
+    let result = new Product({...data})
+    result.save().then(doc => {
+      return res.status(200).json(doc)
+    }, reason => {
+      return res.status(400).json(reason)
+    })
   } catch (e) {
     return res.status(500)
   }

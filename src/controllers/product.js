@@ -9,7 +9,7 @@ exports.add = async (req, res) => {
     if (data.owner) {
       let owner = await User.findOne({_id: data.owner})
       if (owner)
-        data.ref = (new Date().getTime()).toString(50)
+        data.ref = (new Date().getTime()).toString(36)
     }
     let result = new Product({...data})
     result.save().then(doc => {

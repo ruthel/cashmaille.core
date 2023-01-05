@@ -1,10 +1,17 @@
 //mongoose model
 const Product = require('../models/product');
 const {userMessage} = require("./product");
+const User = require("../models/user/user");
 
 exports.add = async (req, res) => {
   try {
-    let result = new Product({})
+    let data = req.body
+    if (data.owner) {
+      let owner = await User.findOne({_id: data.owner})
+      if (owner)
+        data.ref = (new Date().getTime()).toString(50)
+    }
+    let result = new Product(data)
     await result.save()
     return res.status(200).json(result)
   } catch (e) {

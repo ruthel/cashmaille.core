@@ -5,22 +5,15 @@ const {
 } = mongoose;
 
 const schema = new Schema({
-    text: {
+    name: {
       type: String,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      required: false,
       ref: 'User'
     },
-    isRead: {
+    price: {
       type: Boolean,
-      default: false,
-    },
-    to: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: false,
-      ref: 'User'
     },
   },
   {
@@ -29,5 +22,5 @@ const schema = new Schema({
 );
 
 
-const model = mongoose.model('Message', schema);
+const model = mongoose.model('Product', schema);
 module.exports = model;

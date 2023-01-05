@@ -4,7 +4,7 @@ const {sendWelcomeEmail, sendPasswordResetEmail} = require("../helpers/mail")
 
 const User = require('../models/user/user');
 const fs = require("fs");
-const Message = require("../models/message");
+const Message = require("../models/product");
 
 
 exports.signUp = async (req, res) => {
@@ -43,9 +43,9 @@ exports.signUp = async (req, res) => {
 exports.signIn = async (req, res) => {
   try {
     let user = await User.findOne({phone: req.body.phone, password: req.body.password})
-    user = JSON.parse(JSON.stringify(user))
     if (user) {
       const token = await user.generateEmailVerificationToken();
+      user = JSON.parse(JSON.stringify(user))
       res.status(200).json({...user, token})
     } else {
       return invalidData({

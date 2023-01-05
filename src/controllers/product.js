@@ -26,7 +26,7 @@ exports.update = async (req, res) => {
   try {
     let data = {...req.body}
     delete data._id;
-    let result = await Product.updateOne({_id: req.body._id}, data)
+    let result = await Product.findOneAndUpdate({_id: req.body._id}, data)
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

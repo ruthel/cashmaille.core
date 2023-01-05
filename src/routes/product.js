@@ -1,8 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const {add, remove, update} = require("../controllers/product");
-const {get} = require("mongoose");
+const {add, remove, update, get} = require("../controllers/product");
 
 router.post('/add', add);
 router.post('/remove', remove);

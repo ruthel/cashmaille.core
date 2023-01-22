@@ -3,7 +3,7 @@ const {ObjectId} = require("mongodb");
 
 exports.add = async (req, res) => {
   try {
-    let result = new Group({...data})
+    let result = new Group({...req.body})
     result.save().then(doc => {
       return res.status(200).json(doc)
     }, reason => {

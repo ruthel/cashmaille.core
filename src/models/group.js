@@ -16,7 +16,8 @@ const schema = new Schema({
     labels: {
       type: String,
       required: true,
-      // enum: ['customer', 'seller', 'wholesale']
+      enum: ['default'],
+      default: 'default'
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,

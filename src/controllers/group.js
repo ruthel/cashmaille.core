@@ -1,5 +1,4 @@
 const Group = require("../models/group");
-const {ObjectId} = require("mongodb");
 
 exports.add = async (req, res) => {
   try {
@@ -16,7 +15,7 @@ exports.add = async (req, res) => {
 
 exports.addMember = async (req, res) => {
   try {
-    let result = await Group.updateOne({_id: req.body._id}, {$push: {members: req.body.memeber}})
+    let result = await Group.updateOne({_id: req.body._id}, {$push: {members: req.body.member}})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)
@@ -25,7 +24,7 @@ exports.addMember = async (req, res) => {
 
 exports.removeMember = async (req, res) => {
   try {
-    let result = await Group.updateOne({_id: req.body._id}, {$pull: {members: req.body.memeber}})
+    let result = await Group.updateOne({_id: req.body._id}, {$pull: {members: req.body.member}})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)
@@ -36,6 +35,14 @@ exports.removeMember = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     let result = await Group.deleteOne({_id: req.body._id})
+    return res.status(200).json(result)
+  } catch (e) {
+    return res.status(500)
+  }
+}
+exports.listAll = async (req, res) => {
+  try {
+    let result = await Group.find({owner: req.body._id})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

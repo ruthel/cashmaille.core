@@ -16,7 +16,7 @@ const schema = new Schema({
     labels: {
       type: String,
       required: true,
-      enum: ['default'],
+      enum: ['default', 'school', 'family', 'enterprise'],
       default: 'default'
     },
     owner: {

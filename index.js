@@ -9,6 +9,7 @@ const app = express();
 const users = require("./src/routes/user");
 const products = require("./src/routes/product");
 const groups = require("./src/routes/group");
+const transactions = require("./src/routes/transaction");
 const bodyParser = require('body-parser')
 
 app.use(cors());
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(users);
 app.use("/product", products);
 app.use("/group", groups);
+app.use("/transaction", transactions);
 app.use("*", (_, res, __) => {
   return res.status(404).send("Resource not found");
 });

@@ -1,4 +1,5 @@
 const Group = require("../models/group");
+const {ObjectId} = require("mongodb");
 
 exports.add = async (req, res) => {
   try {
@@ -15,8 +16,11 @@ exports.add = async (req, res) => {
 
 exports.addMember = async (req, res) => {
   try {
-    let result = await Group.updateOne({_id: req.body._id}, {$push: {members: req.body.member}})
-    return res.status(200).json(result)
+    if (req.body.member !== req.body._id) {
+      let result = await Group.updateOne({_id: req.body._id}, {$push: {members: req.body.member}})
+      return res.status(200).json(result)
+    } else
+      return res.status(403).json({message: 'member id should be different from the owner'})
   } catch (e) {
     return res.status(500)
   }
@@ -42,7 +46,7 @@ exports.remove = async (req, res) => {
 }
 exports.listAll = async (req, res) => {
   try {
-    let result = await Group.find({owner: req.body._id})
+    let result = await Group.find({owner: new ObjectId(req.body._id)})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

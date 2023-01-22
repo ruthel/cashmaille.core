@@ -15,7 +15,8 @@ const userSchema = new Schema({
     },
     profile: {
       type: String,
-      enum: ['customer', 'seller']
+      required: true,
+      enum: ['customer', 'seller', 'wholesale']
     },
     userCode: {
       trim: true,

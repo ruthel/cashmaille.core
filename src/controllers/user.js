@@ -15,7 +15,7 @@ exports.signUp = async (req, res) => {
         console.log("Duplicated phone")
         return res.status(409)
       } else {
-        new User({...req.body, userCode: (new Date().getTime()).toString(16)}).save().then(doc => {
+        new User({...req.body, userCode: (new Date().getTime()).toString(36)}).save().then(doc => {
           console.log("Data saved successfully")
           return res.status(201).json(doc)
         }, (reason) => {
@@ -59,8 +59,11 @@ exports.signIn = async (req, res) => {
 }
 exports.searchForUser = async (req, res) => {
   try {
-    const users = await User.find({userCode: {$regex: `.*${req.body.userCode}.*`}})
-    res.status(200).json(users)
+    if (req.body.userCode) {
+      const users = await User.find({userCode: {$regex: `.*${req.body.userCode}.*`}})
+      res.status(200).json(users)
+    } else
+      res.status(204)
   } catch (e) {
     console.log(e)
     res.status(500).json()

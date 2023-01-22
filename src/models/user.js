@@ -38,6 +38,12 @@ const userSchema = new Schema({
       required: true,
       type: String,
     },
+    balance: {
+      trim: true,
+      required: true,
+      type: Number,
+      default: 0,
+    },
     awaitingPair: [{
       type: mongoose.Schema.Types.ObjectId,
       required: true,

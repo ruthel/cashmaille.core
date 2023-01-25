@@ -6,7 +6,7 @@ exports.add = async (req, res) => {
   try {
     let result = new Transaction({...req.body})
     let user = await User.findById(req.body.owner);
-    user.balance += req.body.amount;
+    user.balance += parseInt(req.body.amount);
     result.save().then(async doc => {
       await user.save()
       return res.status(200).json(doc)

@@ -23,6 +23,7 @@ exports.add = async (req, res) => {
 
 exports.exchange = async (req, res) => {
   try {
+    console.log(req.body)
     let result = new Transaction({...req.body})
     if (req.body.sender && req.body.owner) {
       let sender = await User.findById(req.body.sender);

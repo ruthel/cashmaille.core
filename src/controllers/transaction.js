@@ -25,10 +25,11 @@ exports.exchange = async (req, res) => {
   try {
     console.log(req.body)
     let result = new Transaction({...req.body})
-    if (req.body.sender && req.body.owner) {
+    if (!!req.body.sender && !!req.body.owner) {
       let sender = await User.findById(req.body.sender);
       let owner = await User.findById(req.body.owner);
       owner.balance += parseInt(req.body.amount);
+      console.log(owner)
       sender.balance -= parseInt(req.body.amount);
       result.save().then(async doc => {
         await owner.save()

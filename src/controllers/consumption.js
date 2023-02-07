@@ -50,6 +50,15 @@ exports.remove = async (req, res) => {
   }
 }
 
+exports.all = async (req, res) => {
+  try {
+    let result = await Consumption.find()
+    return res.status(200).json(result)
+  } catch (e) {
+    return res.status(500)
+  }
+}
+
 exports.update = async (req, res) => {
   try {
     let data = {...req.body}

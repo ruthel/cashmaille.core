@@ -1,5 +1,6 @@
 const Group = require("../models/group");
 const {ObjectId} = require("mongodb");
+const Product = require("../models/product");
 
 exports.add = async (req, res) => {
   try {
@@ -9,6 +10,15 @@ exports.add = async (req, res) => {
     }, reason => {
       return res.status(400).json(reason)
     })
+  } catch (e) {
+    return res.status(500)
+  }
+}
+
+exports.all = async (req, res) => {
+  try {
+    let result = await Group.find()
+    return res.status(200).json(result)
   } catch (e) {
     return res.status(500)
   }

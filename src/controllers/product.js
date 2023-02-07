@@ -2,6 +2,7 @@
 const Product = require('../models/product');
 const User = require("../models/user");
 const {ObjectId} = require("mongodb");
+const Consumption = require("../models/consumption");
 
 exports.add = async (req, res) => {
   try {
@@ -26,6 +27,16 @@ exports.add = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     let result = await Product.deleteOne({_id: req.body._id})
+    return res.status(200).json(result)
+  } catch (e) {
+    return res.status(500)
+  }
+}
+
+
+exports.all = async (req, res) => {
+  try {
+    let result = await Product.find()
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

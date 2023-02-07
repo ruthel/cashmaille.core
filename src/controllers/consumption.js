@@ -1,10 +1,10 @@
-const Transaction = require("../models/transaction");
+const Consumption = require("../models/consumption");
 const {ObjectId} = require("mongodb");
 const User = require("../models/user");
 
 exports.add = async (req, res) => {
   try {
-    let result = new Transaction({...req.body})
+    let result = new Consumption({...req.body})
     let user = await User.findById(req.body.owner);
     if (req.body.tType === 'credit')
       user.balance += parseInt(req.body.amount);
@@ -23,7 +23,7 @@ exports.add = async (req, res) => {
 
 exports.exchange = async (req, res) => {
   try {
-    let result = new Transaction({...req.body})
+    let result = new Consumption({...req.body})
     if (!!req.body.sender && !!req.body.owner) {
       let sender = await User.findById(req.body.sender);
       let owner = await User.findById(req.body.owner);
@@ -46,7 +46,7 @@ exports.exchange = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    let result = await Transaction.deleteOne({_id: req.body._id})
+    let result = await Consumption.deleteOne({_id: req.body._id})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)
@@ -57,7 +57,7 @@ exports.update = async (req, res) => {
   try {
     let data = {...req.body}
     delete data._id;
-    let result = await Transaction.findOneAndUpdate({_id: req.body._id}, data)
+    let result = await Consumption.findOneAndUpdate({_id: req.body._id}, data)
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

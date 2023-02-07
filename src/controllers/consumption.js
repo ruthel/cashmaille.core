@@ -6,10 +6,7 @@ exports.add = async (req, res) => {
   try {
     let result = new Consumption({...req.body})
     let user = await User.findById(req.body.owner);
-    if (req.body.tType === 'credit')
-      user.balance += parseInt(req.body.amount);
-    else
-      user.balance -= parseInt(req.body.amount);
+    user.balance += parseInt(req.body.amount);
     result.save().then(async doc => {
       await user.save()
       return res.status(200).json(doc)

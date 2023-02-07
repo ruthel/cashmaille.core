@@ -13,17 +13,16 @@ const schema = new Schema({
       trim: true,
       required: true,
     },
-    tType: {
-      type: String,
-      required: true,
-      enum: ['debit', 'credit'],
-      default: 'credit'
-    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User'
     },
+    products: [{
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Product'
+    }],
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       required: false,

@@ -1,5 +1,5 @@
 const Consumption = require("../models/consumption");
-const {ObjectId} = require("mongodb");
+const Transaction = require("../models/transaction");
 const User = require("../models/user");
 
 exports.add = async (req, res) => {
@@ -7,7 +7,9 @@ exports.add = async (req, res) => {
     let result = new Consumption({...req.body})
     let user = await User.findById(req.body.owner);
     user.balance += parseInt(req.body.amount);
+    user.balanceExpiryDate = new Date();
     result.save().then(async doc => {
+      await new Transaction({owner: req.body.owner, amount: req.body.amount}).save()
       await user.save()
       return res.status(200).json(doc)
     }, reason => {

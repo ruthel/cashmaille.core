@@ -8,9 +8,8 @@ const {
 } = mongoose;
 
 const schema = new Schema({
-    amount: {
+    total: {
       type: Number,
-      trim: true,
       required: true,
     },
     owner: {
@@ -18,16 +17,20 @@ const schema = new Schema({
       required: true,
       ref: 'User'
     },
-    products: [{
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: 'Product'
-    }],
-    sender: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: false,
-      ref: 'User'
-    },
+    products: [
+      {
+        element: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'Product'
+        },
+        count: {
+          type: Number,
+          default: 1,
+          required: true,
+        }
+      }
+    ]
   },
   {
     timestamps: true

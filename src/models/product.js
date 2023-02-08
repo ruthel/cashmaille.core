@@ -13,6 +13,11 @@ const schema = new Schema({
       type: String,
       required: true
     },
+    count: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

@@ -44,6 +44,9 @@ const userSchema = new Schema({
       type: Number,
       default: 0,
     },
+    balanceExpiryDate: {
+      type: Date,
+    },
     awaitingPair: [{
       type: mongoose.Schema.Types.ObjectId,
       required: true,

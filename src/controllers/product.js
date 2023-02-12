@@ -12,8 +12,10 @@ exports.add = async (req, res) => {
       if (owner) data.ref = (new Date().getTime()).toString(36)
       else res.status(401).json({message: "Operation not allow for this user"})
     }
-    let result = new Product({...data})
-    result.save().then(doc => {
+    let product = new Product({...data})
+    if (Product.count({owner: ObjectId(req.body.owner)}) < 5)
+      product.isFavorite = true
+    product.save().then(doc => {
       return res.status(200).json(doc)
     }, reason => {
       return res.status(400).json(reason)
@@ -56,7 +58,7 @@ exports.update = async (req, res) => {
 
 exports.getForSeller = async (req, res) => {
   try {
-    let result = await Product.find({owner: req.body.owner})
+    let result = await Product.find({owner: ObjectId(req.body.owner)})
     return res.status(200).json(result)
   } catch (e) {
     return res.status(500)

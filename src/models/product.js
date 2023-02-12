@@ -18,6 +18,11 @@ const schema = new Schema({
       required: true,
       default: 1,
     },
+    isFavorite: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
